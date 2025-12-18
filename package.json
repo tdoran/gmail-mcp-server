@@ -1,0 +1,38 @@
+{
+  "name": "email-ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && chmod 755 build/index.js",
+    "start": "ts-node build/index.js",
+    "auth": "ts-node build/index.js auth",
+    "dev": "nodemon",
+    "setup-auth": "node --loader ts-node/esm scripts/setup-auth.ts"
+  },
+  "files": [
+    "build"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.23.0",
+    "fs": "^0.0.1-security",
+    "google-auth-library": "^10.5.0",
+    "googleapis": "^169.0.0",
+    "imapflow": "^1.1.1",
+    "nodemailer": "^7.0.11",
+    "open": "^10.2.0",
+    "ts-node": "^10.9.2",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/nodemailer": "^7.0.4",
+    "nodemon": "^3.1.11",
+    "typescript": "^5.9.3"
+  }
+}
