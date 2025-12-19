@@ -1,9 +1,20 @@
 import { OAuth2Client } from 'google-auth-library';
 import fs from 'fs';
 
-import { OAUTH_CLIENT_KEYS, TOKENS_FILE } from './constants.js';
+import { GLOBAL_AUTH_DIRECTORY, OAUTH_CLIENT_KEYS, TOKENS_FILE, LOCAL_OAUTH_PATH } from './constants.js';
 
 const authSetup = async (): Promise<OAuth2Client> => {
+
+  // Create config directory if it doesn't exist
+  if (!fs.existsSync(GLOBAL_AUTH_DIRECTORY)) {
+    fs.mkdirSync(GLOBAL_AUTH_DIRECTORY, { recursive: true });
+  }
+
+  if (fs.existsSync(LOCAL_OAUTH_PATH)) {
+    // If found in current directory, copy to config directory
+    fs.copyFileSync(LOCAL_OAUTH_PATH, OAUTH_CLIENT_KEYS);
+    console.log('OAuth keys found in current directory, copied to global config.');
+  }
   let oauth2Client: OAuth2Client;
 
 
