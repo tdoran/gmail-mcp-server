@@ -13,7 +13,7 @@ const authSetup = async (): Promise<OAuth2Client> => {
   if (fs.existsSync(LOCAL_OAUTH_PATH)) {
     // If found in current directory, copy to config directory
     fs.copyFileSync(LOCAL_OAUTH_PATH, OAUTH_CLIENT_KEYS);
-    console.log('OAuth keys found in current directory, copied to global config.');
+    console.error('OAuth keys found in current directory, copied to global config.');
   }
   let oauth2Client: OAuth2Client;
 
@@ -40,7 +40,7 @@ const authSetup = async (): Promise<OAuth2Client> => {
   );
 
   oauth2Client.on('tokens', (tokens) => {
-    console.log('New tokens received');
+    console.error('New tokens received');
     fs.writeFileSync(TOKENS_FILE, JSON.stringify(tokens));
   });
 

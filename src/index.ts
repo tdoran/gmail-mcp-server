@@ -16,7 +16,7 @@ async function main() {
 
   if (process.argv[2] === 'auth') {
     await authenticate(oauth2Client);
-    console.log('Authentication completed successfully');
+    console.error('Authentication completed successfully');
     process.exit(0);
   }
 

@@ -21,7 +21,7 @@ const authenticate = async (oauth2Client: OAuth2Client) => {
       ],
     });
 
-    console.log('Please visit this URL to authenticate:', authUrl);
+    console.error('Please visit this URL to authenticate:', authUrl);
     open(authUrl);
 
     server.on('request', async (req, res) => {

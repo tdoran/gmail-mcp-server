@@ -25,8 +25,6 @@ export const registerEmailTools = (server: McpServer, gmail: gmail_v1.Gmail) => 
         labelIds: unread ? ['UNREAD'] : undefined,
       });
 
-      console.error('get_emails list response.data: ', JSON.stringify(listResponse.data, null, 2));
-
       const messageIds = (listResponse.data.messages || [])
         .map((m) => m.id)
         .filter((id): id is string => typeof id === 'string' && id.length > 0);
@@ -77,16 +75,12 @@ export const registerEmailTools = (server: McpServer, gmail: gmail_v1.Gmail) => 
         })
       );
 
-      console.error('get_emails messages responses.data: ', JSON.stringify(messages, null, 2));
-
       const formatted = messages
         .map(({ id, threadId, subject, from, date, body }, i) => {
           return `${i + 1}. ID: ${id}\nThread ID: ${threadId}\n\nSubject: ${subject}\nFrom: ${from}\nDate: ${date}\n\n${body}`;
         })
         .join('\n\n---\n\n');
 
-      console.error('formatted', JSON.stringify(formatted));
-      console.error('messages', JSON.stringify(messages));
 
       return {
         content: [
@@ -102,15 +96,14 @@ export const registerEmailTools = (server: McpServer, gmail: gmail_v1.Gmail) => 
   server.registerTool(
     'draft_reply',
     {
-      description: 'Drafts a reply to an email',
+      description: 'Drafts a reply to an email and tells the user what the content of the draft is',
       inputSchema: z.object({
         threadId: z.string().describe('The ID of the email thread to reply to'),
         body: z.string().describe('The body of the email'),
       }),
     },
-    // I may need more params here
     async ({ threadId, body }) => {
-      const listResponse = await gmail.users.drafts.create({
+      await gmail.users.drafts.create({
         userId: 'me',
         requestBody: {
           message: {
@@ -119,8 +112,6 @@ export const registerEmailTools = (server: McpServer, gmail: gmail_v1.Gmail) => 
           },
         },
       });
-
-      console.error('draft_reply list response.data: ', JSON.stringify(listResponse.data, null, 2));
 
       return {
         content: [
