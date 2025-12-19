@@ -3,8 +3,8 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { google } from 'googleapis';
 import type { gmail_v1 } from 'googleapis';
 import { z } from "zod";
-import fs from 'fs';
-import path from 'path';
+import { htmlToText } from "html-to-text";
+
 
 import authSetup from './auth/authSetup.js';
 import authenticate from './auth/authenticate.js';
@@ -137,7 +137,9 @@ async function main() {
           const date = getHeaderValue(headers, 'Date') || 'Unknown';
 
           const { text, html } = decodeEmailBodyText(payload as GmailMessagePart);
-          let body = text || html || '';
+          const body = text || htmlToText(html, {
+            wordwrap: false,
+          }) || '';
 
 
           const formatted = {
@@ -164,25 +166,20 @@ async function main() {
         .join('\n\n---\n\n');
 
       console.error('formatted', JSON.stringify(formatted))
+      console.error('messages', JSON.stringify(messages))
 
 
       return {
         content: [
+
           {
             type: "text" as const,
-            text: `You have ${messageIds.length} unread emails. Here they are:\n\n${formatted}`,
+            text: `You have ${messageIds.length} unread emails. Here they are in JSON string format:\n\n${JSON.stringify({ emails: messages }, null, 2)}`,
           },
-
         ],
       };
     }
   );
-
-  /* 
-  1. The requested `threadId` must be specified on the `Message` or `Draft.Message` you supply with your request. 
-  2. The `References` and `In-Reply-To` headers must be set in compliance with the [RFC 2822](https://tools.ietf.org/html/rfc2822) standard. 
-  3. The `Subject` headers must match.
-  */
 
   server.registerTool(
     "draft_reply",
