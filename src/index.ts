@@ -26,6 +26,15 @@ const getHeaderValue = (headers: { name?: string | null; value?: string | null }
   return found?.value || undefined;
 };
 
+const toBase64Url = (input: string): string => {
+  return Buffer.from(input, "utf8")
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
+
+
 const decodeBody = (data?: string) =>
   data ? Buffer.from(data, 'base64').toString('utf8') : '';
 
@@ -121,7 +130,6 @@ async function main() {
             id: id,
           });
           const payload = data.payload
-          const parts = payload?.parts
           const headers = payload?.headers
 
           const subject = getHeaderValue(headers, 'Subject') || 'No subject';
@@ -138,6 +146,7 @@ async function main() {
             subject,
             from,
             date,
+            snippet: data?.snippet,
             body
           }
 
@@ -166,6 +175,47 @@ async function main() {
 
         ],
       };
+    }
+  );
+
+  /* 
+  1. The requested `threadId` must be specified on the `Message` or `Draft.Message` you supply with your request. 
+  2. The `References` and `In-Reply-To` headers must be set in compliance with the [RFC 2822](https://tools.ietf.org/html/rfc2822) standard. 
+  3. The `Subject` headers must match.
+  */
+
+  server.registerTool(
+    "draft_reply",
+    {
+      description: "Drafts a reply to an email",
+      inputSchema: z.object({
+        threadId: z.string().describe("The ID of the email thread to reply to"),
+        body: z.string().describe("The body of the email"),
+      }),
+    },
+    // I may need more params here
+    async ({ threadId, body }) => {
+
+      const listResponse = await gmail.users.drafts.create({
+        userId: 'me',
+        requestBody: {
+          message: {
+            raw: toBase64Url(body),
+            threadId
+          }
+        }
+      });
+
+      console.error('draft_reply list response.data: ', JSON.stringify(listResponse.data, null, 2))
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `Drafted reply to thread ${threadId}. The draft content is:\n\n${body}`,
+          }
+        ]
+      }
     }
   );
 
