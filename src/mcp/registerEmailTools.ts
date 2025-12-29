@@ -3,12 +3,12 @@ import type { gmail_v1 } from 'googleapis';
 import { z } from 'zod';
 import { htmlToText } from 'html-to-text';
 
-import type { GmailMessagePart } from '../gmail/types.js';
+import type { GmailMessagePart } from '../types.js';
 import { decodeEmailBodyText } from '../gmail/decodeEmailBodyText.js';
 import { getHeaderValue } from '../gmail/headers.js';
 import { toBase64Url } from '../gmail/base64Url.js';
 
-export const registerEmailTools = (server: McpServer, gmail: gmail_v1.Gmail) => {
+export const registerEmailTools = ({ server, gmail, styleGuide }: { server: McpServer, gmail: gmail_v1.Gmail, styleGuide: string }) => {
   server.registerTool(
     'get_emails',
     {
@@ -96,7 +96,7 @@ export const registerEmailTools = (server: McpServer, gmail: gmail_v1.Gmail) => 
   server.registerTool(
     'draft_reply',
     {
-      description: 'Drafts a reply to an email and tells the user what the content of the draft is',
+      description: 'Drafts a reply to an email and tells the user what the content of the draft is. The style guide is: \n\n' + styleGuide,
       inputSchema: z.object({
         threadId: z.string().describe('The ID of the email thread to reply to'),
         body: z.string().describe('The body of the email'),

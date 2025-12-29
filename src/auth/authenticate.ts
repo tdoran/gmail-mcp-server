@@ -17,7 +17,7 @@ const authenticate = async (oauth2Client: OAuth2Client) => {
       scope: [
         'https://www.googleapis.com/auth/gmail.readonly',
         'https://www.googleapis.com/auth/gmail.compose',
-
+        'https://www.googleapis.com/auth/documents.readonly',
       ],
     });
 

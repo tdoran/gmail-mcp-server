@@ -1,4 +1,4 @@
-import type { EmailBodyContent, GmailMessagePart } from './types.js';
+import type { EmailBodyContent, GmailMessagePart } from '../types.js';
 
 const decodeBody = (data?: string) => (data ? Buffer.from(data, 'base64').toString('utf8') : '');
 
@@ -22,7 +22,7 @@ export function decodeEmailBodyText(part: GmailMessagePart): EmailBodyContent {
     }
   }
 
-  // Traverse child parts, if any
+  // Handle child parts, if any
   if (Array.isArray(part.parts)) {
     for (const childPart of part.parts) {
       const childContent = decodeEmailBodyText(childPart);

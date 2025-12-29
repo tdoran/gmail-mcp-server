@@ -2,10 +2,10 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { google } from 'googleapis';
 
-
 import authSetup from './auth/authSetup.js';
 import authenticate from './auth/authenticate.js';
 import { registerEmailTools } from './mcp/registerEmailTools.js';
+import { getStyledGuideGoogleDoc } from "./google_docs/getStyleGuide.js";
 
 const server = new McpServer({
   name: "email-ts",
@@ -20,9 +20,13 @@ async function main() {
     process.exit(0);
   }
 
-  const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
+  const auth = oauth2Client;
+  const gmail = google.gmail({ version: 'v1', auth });
+  const docs = google.docs({ version: 'v1', auth });
 
-  registerEmailTools(server, gmail);
+  const styleGuide = await getStyledGuideGoogleDoc(docs)
+
+  registerEmailTools({ server, gmail, styleGuide });
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
