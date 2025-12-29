@@ -10,7 +10,7 @@ import { toBase64Url } from '../gmail/base64Url.js';
 
 export const registerEmailTools = ({ server, gmail, styleGuide }: { server: McpServer, gmail: gmail_v1.Gmail, styleGuide: string }) => {
   server.registerTool(
-    'get_emails',
+    'get_unread_emails',
     {
       description: "Gets emails from Gmail (lists unread IDs, then fetches each email's content).",
       inputSchema: z.object({
@@ -94,7 +94,7 @@ export const registerEmailTools = ({ server, gmail, styleGuide }: { server: McpS
   );
 
   server.registerTool(
-    'draft_reply',
+    'create_draft_reply',
     {
       description: 'Drafts a reply to an email and tells the user what the content of the draft is. The style guide is: \n\n' + styleGuide,
       inputSchema: z.object({

@@ -9,8 +9,7 @@
     "build": "tsc && chmod 755 build/index.js",
     "start": "ts-node build/index.js",
     "auth": "ts-node build/index.js auth",
-    "dev": "nodemon",
-    "setup-auth": "node --loader ts-node/esm scripts/setup-auth.ts"
+    "dev": "nodemon"
   },
   "files": [
     "build"

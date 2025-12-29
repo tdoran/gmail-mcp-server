@@ -4,7 +4,7 @@ import { auth } from "google-auth-library";
 import fs from 'fs';
 import type { GoogleDoc } from '../types.js'
 
-import { STYLE_GUIDE_DOCS_ID, EMAIL_STYLE_GUIDE_DEFAULT_FILE } from '../auth/constants.js'
+import { STYLE_GUIDE_DOCS_ID, EMAIL_STYLE_GUIDE_DEFAULT_FILE } from './constants.js'
 
 
 const extractPlainText = (doc: GoogleDoc): string => {
